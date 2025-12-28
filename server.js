@@ -15,6 +15,10 @@ const authRoutes = require('./routes/auth');
 // API routes
 app.use('/api/auth', authRoutes);
 
+// 404 handler
+app.use(/.*/, (req, res) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
