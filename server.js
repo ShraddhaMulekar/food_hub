@@ -15,9 +15,7 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 4001
 
-// ============================================
 // CREATE HTTP SERVER FOR SOCKET.IO
-// ============================================
 const server = http.createServer(app)
 
 // Initialize Socket.IO with the HTTP server
@@ -31,9 +29,7 @@ const io = require('socket.io')(server, {
   }
 })
 
-// ============================================
 // CREATE UPLOADS DIRECTORIES IF NOT EXISTS
-// ============================================
 const uploadsDir = path.join(__dirname, 'uploads')
 const paymentsDir = path.join(__dirname, 'uploads/payments')
 
@@ -46,9 +42,7 @@ if (!fs.existsSync(paymentsDir)) {
   console.log('✅ Payments directory created')
 }
 
-// ============================================
 // VALIDATE REQUIRED ENVIRONMENT VARIABLES
-// ============================================
 const requiredEnvVars = [
   'MONGODB_URL',
   'JWT_SECRET',
@@ -62,9 +56,7 @@ if (missingVars.length > 0) {
   process.exit(1)
 }
 
-// ============================================
 // MIDDLEWARE SETUP
-// ============================================
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
@@ -113,9 +105,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('combined'))
 }
 
-// ============================================
 // RATE LIMITING - FIXED FOR IPv6
-// ============================================
 // Use the built-in key generator instead of custom one
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -128,15 +118,11 @@ const limiter = rateLimit({
 
 app.use('/api/', limiter)
 
-// ============================================
 // STATIC FILES
-// ============================================
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use('/uploads/payments', express.static(path.join(__dirname, 'uploads/payments')))
 
-// ============================================
 // IMPORT ROUTES
-// ============================================
 const authRoutes = require('./routes/auth')
 const userRoutes = require('./routes/users')
 const menuRoutes = require('./routes/menu')
@@ -146,9 +132,7 @@ const adminRoutes = require('./routes/admin')
 const paymentRoutes = require('./routes/payments')
 const notificationRoutes = require('./routes/notifications')
 
-// ============================================
 // API ROUTES
-// ============================================
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/menu', menuRoutes)
@@ -163,9 +147,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' })
 })
 
-// ============================================
 // SOCKET.IO CONNECTION HANDLING
-// ============================================
 io.on('connection', (socket) => {
   console.log('✅ User connected:', socket.id)
 
@@ -204,9 +186,7 @@ io.on('connection', (socket) => {
 // Make io accessible to routes
 app.set('io', io)
 
-// ============================================
 // ERROR HANDLING MIDDLEWARE
-// ============================================
 app.use((err, req, res, next) => {
   console.error('❌ Error:', err.stack)
   res.status(err.status || 500).json({
@@ -221,9 +201,7 @@ app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' })
 })
 
-// ============================================
 // START SERVER FUNCTION
-// ============================================
 async function startServer() {
   try {
     // Connect to MongoDB
@@ -256,9 +234,7 @@ async function startServer() {
   }
 }
 
-// ============================================
 // GRACEFUL SHUTDOWN HANDLING
-// ============================================
 process.on('SIGTERM', () => {
   console.log('⚠️ SIGTERM received, shutting down gracefully...')
   server.close(() => {
@@ -275,9 +251,7 @@ process.on('SIGINT', () => {
   })
 })
 
-// ============================================
 // START THE SERVER
-// ============================================
 startServer()
 
 module.exports = { app, server, io }

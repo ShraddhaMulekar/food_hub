@@ -1,8 +1,6 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 const { protect } = require('../middleware/auth');
-const { registerPage } = require('../pages/auth/registerPage');
+const { registerUser } = require('../pages/auth/registerPage');
 const { registerBodyReq } = require('../bodyReq/auth/register-body-req');
 const { loginBodyReq } = require('../bodyReq/auth/login-body-req');
 const { loginPage } = require('../pages/auth/loginPage');
@@ -30,7 +28,7 @@ const generateToken = (id) => {
 // @route   POST /api/auth/register
 // @desc    Register a new user (no OTP)
 // @access  Public
-router.post('/register', registerBodyReq, registerPage);
+router.post('/register', registerBodyReq, registerUser);
 
 // @route   POST /api/auth/login
 // @desc    Login user
