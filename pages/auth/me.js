@@ -1,22 +1,26 @@
-const User = require('../../models/User');
-
 const mePage = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized'
+      });
+    }
 
-    res.json({
+    res.status(200).json({
       success: true,
       data: {
-        user: user.getPublicProfile()
+        user: req.user.getPublicProfile()
       }
     });
+
   } catch (error) {
-    console.error('Get profile error:', error);
+    console.error('Profile error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while fetching profile'
     });
   }
-}
+};
 
 module.exports = { mePage };
