@@ -1,9 +1,11 @@
+const { generateToken } = require('../../utils/auth');
+
 const refreshPage = async (req, res) => {
   try {
-    // Generate new token
+    // req.user is set by protect middleware
     const token = generateToken(req.user._id);
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: 'Token refreshed successfully',
       data: {
@@ -12,10 +14,12 @@ const refreshPage = async (req, res) => {
     });
   } catch (error) {
     console.error('Token refresh error:', error);
+
     res.status(500).json({
       success: false,
       message: 'Server error while refreshing token'
     });
   }
-}
+};
+
 module.exports = { refreshPage };
