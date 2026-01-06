@@ -4,8 +4,8 @@ console.log('2 import.meta.env.MODE -', import.meta.env.MODE);
 // Create axios instance with base URL
 const api = axios.create({
   baseURL: import.meta.env.PROD
-    ? 'http://localhost:5000'
-    : 'http://localhost:4001',
+    ? 'https://fooddesk-2fmy.onrender.com'
+    : 'http://localhost:5000',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
